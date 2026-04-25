@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beans & Brew | Specialty Coffee House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">B<span>&</span>B</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Главная</a></li>
+                <li><a href="menu.html">Меню</a></li>
+                <li><a href="contact.html">Контакты</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div id="authButtons">
+                    <button class="btn-outline" onclick="openLoginModal()">Войти</button>
+                    <button class="btn-outline" onclick="openRegisterModal()">Регистрация</button>
+                </div>
+                <div id="userInfo" style="display:none;">
+                    <span id="userName"></span>
+                    <button class="btn-outline" onclick="logout()">Выйти</button>
+                </div>
+                <div id="cartIcon" onclick="openCartModal()">
+                    🛒 <span id="cartCount">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero-premium">
+        <div class="container hero-split">
+            <div class="hero-content">
+                <span class="subtitle">Искусство обжарки</span>
+                <h1>Кофе,<br> за которым<br> возвращаются</h1>
+                <p>Мы находим редкие лоты specialty кофе и раскрываем их истинный вкус в нашей собственной обжарочной лаборатории.</p>
+                <a href="menu.html" class="btn-premium">Исследовать меню</a>
+            </div>
+            <div class="hero-image-wrap">
+                <img src="https://images.unsplash.com/photo-1595434091143-b375ace5d516?q=80&w=1000&auto=format&fit=crop" alt="Свежесваренный кофе" class="hero-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Вход</h2>
+            <form id="loginForm">
+                <input type="text" id="loginPhone" placeholder="Телефон" required>
+                <input type="password" id="loginPassword" placeholder="Пароль" required>
+                <button type="submit" class="btn-primary">Войти</button>
+            </form>
+            <p>Нет аккаунта? <a href="#" onclick="openRegisterModal()">Зарегистрироваться</a></p>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Регистрация</h2>
+            <form id="registerForm">
+                <input type="text" id="regName" placeholder="Имя" required>
+                <input type="text" id="regPhone" placeholder="Телефон" required>
+                <input type="password" id="regPassword" placeholder="Пароль" required>
+                <button type="submit" class="btn-primary">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно корзины -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content cart-modal">
+            <span class="close" onclick="closeCartModal()">&times;</span>
+            <h2>Моя корзина</h2>
+            <div id="cartItems"></div>
+            <div class="cart-footer">
+                <span>Итого: <span id="cartTotal">0</span> ₽</span>
+                <button class="btn-danger" onclick="clearCart()">Очистить корзину</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель | Beans & Brew</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        /* Форма входа */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+        }
+
+        .login-box {
+            background: #1e1e1e;
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #333;
+        }
+
+        .login-box h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #c6a664;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #c6a664;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #c6a664;
+            border: none;
+            border-radius: 5px;
+            color: #121212;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #e0c990;
+        }
+
+        .error-message {
+            color: #e57373;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Админ-панель (скрыта до входа) */
+        .admin-panel {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        .admin-header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: #c6a664;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #333;
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #e57373;
+            color: #fff;
+        }
+
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            border-color: #c6a664;
+        }
+
+        .tab-btn.active {
+            background: #c6a664;
+            color: #121212;
+            border-color: #c6a664;
+        }
+
+        /* Контент вкладок */
+        .tab-content {
+            display: none;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Таблицы */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background: #2a2a2a;
+            color: #c6a664;
+        }
+
+        /* Формы внутри админки */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a0a0a0;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #e0e0e0;
+        }
+
+        .btn-primary {
+            padding: 10px 20px;
+            background: #c6a664;
+            border: none;
+            border-radius: 5px;
+            color: #121212;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            padding: 5px 10px;
+            background: #e57373;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            padding: 5px 10px;
+            background: #4caf50;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #c6a664;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Форма входа -->
+<div id="loginContainer" class="login-container">
+    <div class="login-box">
+        <h2>Вход в админ-панель</h2>
+        <input type="text" id="loginPhone" placeholder="Телефон">
+        <input type="password" id="loginPassword" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
+        <div id="loginError" class="error-message"></div>
+    </div>
+</div>
+
+<!-- Админ-панель (скрыта до входа) -->
+<div id="adminPanel" class="admin-panel">
+    <div class="admin-header">
+        <h1>🍷 Beans & Brew — Админ-панель</h1>
+        <button class="logout-btn" onclick="logout()">Выйти</button>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="stats">📊 Статистика</button>
+        <button class="tab-btn" data-tab="menu">🍽 Меню</button>
+        <button class="tab-btn" data-tab="bookings">📅 Бронирования</button>
+        <button class="tab-btn" data-tab="messages">💬 Сообщения</button>
+        <button class="tab-btn" data-tab="users">👥 Пользователи</button>
+        <button class="tab-btn" data-tab="carts">🛒 Корзины</button>
+    </div>
+
+    <!-- Статистика -->
+    <div id="tab-stats" class="tab-content active">
+        <div class="stats-grid" id="statsContainer">
+            <div class="stat-card"><h3 id="statsUsers">-</h3><p>Пользователей</p></div>
+            <div class="stat-card"><h3 id="statsMenu">-</h3><p>Позиций в меню</p></div>
+            <div class="stat-card"><h3 id="statsBookings">-</h3><p>Бронирований</p></div>
+            <div class="stat-card"><h3 id="statsMessages">-</h3><p>Сообщений</p></div>
+        </div>
+    </div>
+
+    <!-- Управление меню -->
+    <div id="tab-menu" class="tab-content">
+        <button class="btn-primary" onclick="showAddMenuModal()">+ Добавить позицию</button>
+        <br><br>
+        <table id="menuTable">
+            <thead>
+                <tr><th>ID</th><th>Название</th><th>Категория</th><th>Цена</th><th>Описание</th><th>Действия</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Бронирования -->
+    <div id="tab-bookings" class="tab-content">
+        <table id="bookingsTable">
+            <thead><tr><th>ID</th><th>Имя</th><th>Телефон</th><th>Дата</th><th>Время</th><th>Гостей</th><th>Статус</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Сообщения -->
+    <div id="tab-messages" class="tab-content">
+        <table id="messagesTable">
+            <thead><tr><th>ID</th><th>Имя</th><th>Сообщение</th><th>Дата</th><th>Обработано</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Пользователи -->
+    <div id="tab-users" class="tab-content">
+        <table id="usersTable">
+            <thead><tr><th>ID</th><th>Имя</th><th>Телефон</th><th>Email</th><th>Роль</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Корзины -->
+    <div id="tab-carts" class="tab-content">
+        <select id="cartUserSelect" onchange="loadCartForUser()">
+            <option value="">Выберите пользователя</option>
+        </select>
+        <br><br>
+        <table id="cartTable">
+            <thead><tr><th>ID товара</th><th>Название</th><th>Количество</th><th>Цена</th><th>Сумма</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Модальное окно добавления/редактирования меню -->
+<div id="menuModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Добавить позицию</h3>
+        <input type="hidden" id="editMenuId">
+        <div class="form-group"><label>Название</label><input type="text" id="menuName"></div>
+        <div class="form-group">
+            <label>Категория</label>
+            <select id="menuCategory">
+                <option value="coffee">Кофе</option>
+                <option value="dessert">Десерт</option>
+                <option value="author">Авторский</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Цена</label><input type="number" id="menuPrice"></div>
+        <div class="form-group"><label>Описание</label><textarea id="menuDescription"></textarea></div>
+        <button class="btn-primary" onclick="saveMenuItem()">Сохранить</button>
+        <button onclick="closeModal()" style="margin-left:10px;">Отмена</button>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+
+    async function login() {
+        const phone = document.getElementById('loginPhone').value;
+        const password = document.getElementById('loginPassword').value;
+
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.user.role === 'admin') {
+            currentUser = data.user;
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAllData();
+        } else {
+            document.getElementById('loginError').innerText = 'Доступ запрещён. Только для администратора.';
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('loginPhone').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').innerText = '';
+    }
+
+    async function loadAllData() {
+        loadStats();
+        loadMenu();
+        loadBookings();
+        loadMessages();
+        loadUsers();
+        loadUsersForCartSelect();
+    }
+
+    async function loadStats() {
+        const [menu, bookings, messages, users] = await Promise.all([
+            fetch('/api/menu').then(r => r.json()),
+            fetch('/api/bookings').then(r => r.json()),
+            fetch('/api/contacts').then(r => r.json()),
+            fetch('/api/users').then(r => r.json()).catch(() => [])
+        ]);
+        document.getElementById('statsMenu').innerText = menu.length || 0;
+        document.getElementById('statsBookings').innerText = bookings.length || 0;
+        document.getElementById('statsMessages').innerText = messages.length || 0;
+        document.getElementById('statsUsers').innerText = users.length || 0;
+    }
+
+    async function loadMenu() {
+        const res = await fetch('/api/menu');
+        const items = await res.json();
+        const tbody = document.querySelector('#menuTable tbody');
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.category}</td>
+                <td>${item.price} ₽</td>
+                <td>${item.description || '-'}</td>
+                <td>
+                    <button class="btn-edit" onclick="editMenuItem(${item.id})">✎</button>
+                    <button class="btn-danger" onclick="deleteMenuItem(${item.id})">🗑</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function showAddMenuModal() {
+        document.getElementById('modalTitle').innerText = 'Добавить позицию';
+        document.getElementById('editMenuId').value = '';
+        document.getElementById('menuName').value = '';
+        document.getElementById('menuCategory').value = 'coffee';
+        document.getElementById('menuPrice').value = '';
+        document.getElementById('menuDescription').value = '';
+        document.getElementById('menuModal').style.display = 'flex';
+    }
+
+    function editMenuItem(id) {
+        fetch('/api/menu/' + id)
+            .then(r => r.json())
+            .then(item => {
+                document.getElementById('modalTitle').innerText = 'Редактировать позицию';
+                document.getElementById('editMenuId').value = item.id;
+                document.getElementById('menuName').value = item.name;
+                document.getElementById('menuCategory').value = item.category;
+                document.getElementById('menuPrice').value = item.price;
+                document.getElementById('menuDescription').value = item.description || '';
+                document.getElementById('menuModal').style.display = 'flex';
+            });
+    }
+
+    async function saveMenuItem() {
+        const id = document.getElementById('editMenuId').value;
+        const data = {
+            name: document.getElementById('menuName').value,
+            category: document.getElementById('menuCategory').value,
+            price: parseInt(document.getElementById('menuPrice').value),
+            description: document.getElementById('menuDescription').value
+        };
+
+        let response;
+        if (id) {
+            response = await fetch('/api/menu/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } else {
+            response = await fetch('/api/menu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }
+
+        if (response.ok) {
+            closeModal();
+            loadMenu();
+            loadStats();
+        } else {
+            alert('Ошибка сохранения');
+        }
+    }
+
+    async function deleteMenuItem(id) {
+        if (confirm('Удалить позицию?')) {
+            await fetch('/api/menu/' + id, { method: 'DELETE' });
+            loadMenu();
+            loadStats();
+        }
+    }
+
+    async function loadBookings() {
+        const res = await fetch('/api/bookings');
+        const items = await res.json();
+        const tbody = document.querySelector('#bookingsTable tbody');
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.phone}</td>
+                <td>${item.date}</td>
+                <td>${item.time}</td>
+                <td>${item.guests}</td>
+                <td>${item.status}</td>
+            </tr>
+        `).join('');
+    }
+
+    async function loadMessages() {
+        const res = await fetch('/api/contacts');
+        const items = await res.json();
+        const tbody = document.querySelector('#messagesTable tbody');
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.message}</td>
+                <td>${item.created_at}</td>
+                <td>${item.is_processed ? '✅' : '⏳'}</td>
+            </tr>
+        `).join('');
+    }
+
+    async function loadUsers() {
+        const res = await fetch('/api/users');
+        const items = await res.json();
+        const tbody = document.querySelector('#usersTable tbody');
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.phone}</td>
+                <td>${item.email || '-'}</td>
+                <td>${item.role}</td>
+            </tr>
+        `).join('');
+    }
+
+    async function loadUsersForCartSelect() {
+        const res = await fetch('/api/users');
+        const users = await res.json();
+        const select = document.getElementById('cartUserSelect');
+        select.innerHTML = '<option value="">Выберите пользователя</option>' + 
+            users.map(u => `<option value="${u.id}">${u.name} (${u.phone})</option>`).join('');
+    }
+
+    async function loadCartForUser() {
+        const userId = document.getElementById('cartUserSelect').value;
+        if (!userId) return;
+        const res = await fetch('/api/cart/' + userId);
+        const data = await res.json();
+        const tbody = document.querySelector('#cartTable tbody');
+        tbody.innerHTML = data.items.map(item => `
+            <tr>
+                <td>${item.menu_item_id}</td>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>${item.price} ₽</td>
+                <td>${item.price * item.quantity} ₽</td>
+            </tr>
+        `).join('');
+    }
+
+    function closeModal() {
+        document.getElementById('menuModal').style.display = 'none';
+    }
+
+    // Вкладки
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+    });
+
+    window.onclick = (e) => {
+        if (e.target === document.getElementById('menuModal')) closeModal();
+    };
+</script>
+</body>
+</html>
