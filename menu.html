@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню | Beans & Brew</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-bg">
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">B<span>&</span>B</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="menu.html" class="active">Меню</a></li>
+                <li><a href="contact.html">Контакты</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div id="authButtons">
+                    <button class="btn-outline" onclick="openLoginModal()">Войти</button>
+                    <button class="btn-outline" onclick="openRegisterModal()">Регистрация</button>
+                </div>
+                <div id="userInfo" style="display:none;">
+                    <span id="userName"></span>
+                    <button class="btn-outline" onclick="logout()">Выйти</button>
+                </div>
+                <div id="cartIcon" onclick="openCartModal()">
+                    🛒 <span id="cartCount">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container page-content">
+        <div class="text-center-block">
+            <span class="subtitle">Карта вкусов</span>
+            <h2 class="section-title">Классика и Авторские напитки</h2>
+        </div>
+        
+        <div class="menu-premium-grid" id="menuList">
+            <!-- Загружается через API -->
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        async function loadMenu() {
+            const res = await fetch('/api/menu');
+            const items = await res.json();
+            const container = document.getElementById('menuList');
+            container.innerHTML = items.map(item => `
+                <div class="menu-card">
+                    <div class="menu-card-header">
+                        <h3>${item.name}</h3>
+                        <span class="dots"></span>
+                        <span class="price">${item.price} ₽</span>
+                    </div>
+                    <p>${item.description || ''}</p>
+                    <button class="btn-small" onclick="addToCart(${item.id})">В корзину</button>
+                </div>
+            `).join('');
+        }
+        loadMenu();
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты | Beans & Brew</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-bg">
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">B<span>&</span>B</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="menu.html">Меню</a></li>
+                <li><a href="contact.html" class="active">Контакты</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div id="authButtons">
+                    <button class="btn-outline" onclick="openLoginModal()">Войти</button>
+                    <button class="btn-outline" onclick="openRegisterModal()">Регистрация</button>
+                </div>
+                <div id="userInfo" style="display:none;">
+                    <span id="userName"></span>
+                    <button class="btn-outline" onclick="logout()">Выйти</button>
+                </div>
+                <div id="cartIcon" onclick="openCartModal()">
+                    🛒 <span id="cartCount">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container page-content">
+        <div class="contact-wrap">
+            <div class="contact-info-block">
+                <span class="subtitle">Ждем вас</span>
+                <h2 class="section-title">Пространство B&B</h2>
+                <div class="info-details">
+                    <p>ул. Кофейная панорама, 12, Центр</p>
+                    <p>Ежедневно: 08:00 — 23:00</p>
+                    <p class="phone">+7 (999) 123-45-67</p>
+                </div>
+            </div>
+            <div class="contact-form-block">
+                <h3>Забронировать столик</h3>
+                <form id="bookingForm">
+                    <div class="form-group"><input type="text" id="bookingName" placeholder="Ваше имя" required></div>
+                    <div class="form-group"><input type="text" id="bookingPhone" placeholder="Телефон" required></div>
+                    <div class="form-group"><input type="date" id="bookingDate" required></div>
+                    <div class="form-group"><input type="time" id="bookingTime" required></div>
+                    <div class="form-group"><input type="number" id="bookingGuests" placeholder="Количество гостей (1-10)" min="1" max="10" required></div>
+                    <div class="form-group"><textarea id="bookingComment" rows="2" placeholder="Пожелания"></textarea></div>
+                    <button type="submit" class="btn-premium">Забронировать</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="contact-form-block" style="margin-top: 40px;">
+            <h3>Написать нам</h3>
+            <form id="contactForm">
+                <div class="form-group"><input type="text" id="contactName" placeholder="Ваше имя" required></div>
+                <div class="form-group"><textarea id="contactMessage" rows="4" placeholder="Ваше сообщение" required></textarea></div>
+                <button type="submit" class="btn-premium">Отправить</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
